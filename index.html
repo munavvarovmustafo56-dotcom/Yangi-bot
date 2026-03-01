@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Olov AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --fire1: #ff4500;
+            --fire2: #ff6b00;
+            --fire3: #ffaa00;
+            --dark: #0a0a0f;
+            --dark2: #111118;
+            --dark3: #1a1a26;
+            --card: #16161f;
+            --border: rgba(255,100,0,0.2);
+            --text: #e8e8f0;
+            --text2: #9090a8;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Animated fire background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 100%, rgba(255,69,0,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(255,170,0,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 0%, rgba(255,100,0,0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* HEADER */
+        header {
+            position: relative;
+            z-index: 10;
+            background: rgba(10,10,15,0.95);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(20px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--fire1), var(--fire3));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 0 20px rgba(255,100,0,0.4);
+            animation: pulse-fire 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-fire {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,100,0,0.4); }
+            50% { box-shadow: 0 0 35px rgba(255,150,0,0.7); }
+        }
+
+        .logo-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--fire1), var(--fire3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            color: var(--text2);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0,200,80,0.1);
+            border: 1px solid rgba(0,200,80,0.2);
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 12px;
+            color: #00c850;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: #00c850;
+            border-radius: 50%;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .btn-clear {
+            background: rgba(255,69,0,0.1);
+            border: 1px solid rgba(255,69,0,0.3);
+            color: var(--fire1);
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .btn-clear:hover {
+            background: rgba(255,69,0,0.2);
+        }
+
+        /* CHAT AREA */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            scroll-behavior: smooth;
+        }
+
+        .chat-container::-webkit-scrollbar { width: 4px; }
+        .chat-container::-webkit-scrollbar-track { background: transparent; }
+        .chat-container::-webkit-scrollbar-thumb { background: rgba(255,100,0,0.3); border-radius: 2px; }
+
+        /* Welcome screen */
+        .welcome {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 200px);
+            text-align: center;
+            gap: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .welcome-icon {
+            font-size: 80px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255,100,0,0.6));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .welcome h2 {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, var(--fire3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome p {
+            color: var(--text2);
+            font-size: 15px;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-width: 600px;
+        }
+
+        .suggestion-btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .suggestion-btn:hover {
+            background: rgba(255,100,0,0.1);
+            border-color: rgba(255,100,0,0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Messages */
+        .message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .avatar.bot {
+            background: linear-gradient(135deg, var(--fire1), var(--fire3));
+            box-shadow: 0 0 15px rgba(255,100,0,0.3);
+        }
+
+        .avatar.user {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+
+        .bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .bubble.bot {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+        }
+
+        .bubble.user {
+            background: linear-gradient(135deg, rgba(79,70,229,0.8), rgba(124,58,237,0.8));
+            border: 1px solid rgba(124,58,237,0.3);
+            border-bottom-right-radius: 4px;
+        }
+
+        /* Code blocks in bot messages */
+        .bubble code {
+            background: rgba(0,0,0,0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            color: var(--fire3);
+        }
+
+        .bubble pre {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,100,0,0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            overflow-x: auto;
+        }
+
+        .bubble pre code {
+            background: none;
+            padding: 0;
+        }
+
+        /* Typing indicator */
+        .typing {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .typing-bubble {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 14px 18px;
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--fire2);
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* INPUT AREA */
+        .input-area {
+            position: relative;
+            z-index: 10;
+            background: rgba(10,10,15,0.97);
+            border-top: 1px solid var(--border);
+            padding: 16px 20px;
+            backdrop-filter: blur(20px);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        textarea {
+            flex: 1;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 16px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            resize: none;
+            min-height: 48px;
+            max-height: 150px;
+            outline: none;
+            transition: border-color 0.2s;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            border-color: rgba(255,100,0,0.5);
+            box-shadow: 0 0 0 3px rgba(255,100,0,0.1);
+        }
+
+        textarea::placeholder { color: var(--text2); }
+
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--fire1), var(--fire3));
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(255,100,0,0.3);
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255,100,0,0.5);
+        }
+
+        .send-btn:active { transform: scale(0.95); }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .send-btn svg { width: 20px; height: 20px; fill: white; }
+
+        .input-hint {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text2);
+            margin-top: 8px;
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+            .bubble { max-width: 85%; }
+            header { padding: 10px 14px; }
+            .logo-text p { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo">
+        <div class="logo-icon">🔥</div>
+        <div class="logo-text">
+            <h1>Olov AI</h1>
+            <p>Powered by Google Gemini</p>
+        </div>
+    </div>
+    <div class="header-actions">
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            Online
+        </div>
+        <button class="btn-clear" onclick="clearChat()">🗑️ Tozala</button>
+    </div>
+</header>
+
+<!-- CHAT -->
+<div class="chat-container" id="chatContainer">
+    <!-- Welcome screen -->
+    <div class="welcome" id="welcome">
+        <div class="welcome-icon">🔥</div>
+        <h2>Olov AI ga xush kelibsiz!</h2>
+        <p>Men har qanday savolga javob bera olaman. O'zbek, Rus yoki Ingliz tilida gaplashing!</p>
+        <div class="suggestions">
+            <button class="suggestion-btn" onclick="sendSuggestion(this)">🐍 Python o'rgatib ber</button>
+            <button class="suggestion-btn" onclick="sendSuggestion(this)">✍️ Ijodiy hikoya yoz</button>
+            <button class="suggestion-btn" onclick="sendSuggestion(this)">🔢 Matematik masala yech</button>
+            <button class="suggestion-btn" onclick="sendSuggestion(this)">🌍 Inglizchaga tarjima qil</button>
+            <button class="suggestion-btn" onclick="sendSuggestion(this)">💡 5 ta qiziqarli fakt ayt</button>
+            <button class="suggestion-btn" onclick="sendSuggestion(this)">📧 Rasmiy xat yoz</button>
+        </div>
+    </div>
+</div>
+
+<!-- INPUT -->
+<div class="input-area">
+    <div class="input-wrapper">
+        <textarea
+            id="messageInput"
+            placeholder="Xabar yozing... (Enter — yuborish, Shift+Enter — yangi qator)"
+            rows="1"
+            onkeydown="handleKeyDown(event)"
+            oninput="autoResize(this)"
+        ></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+        </button>
+    </div>
+    <div class="input-hint">Gemini 1.5 Flash • Bepul va cheksiz 🚀</div>
+</div>
+
+<script>
+    const sessionId = 'user_' + Math.random().toString(36).substr(2, 9);
+    const chatContainer = document.getElementById('chatContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const welcome = document.getElementById('welcome');
+    let isTyping = false;
+
+    function autoResize(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 150) + 'px';
+    }
+
+    function handleKeyDown(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function sendSuggestion(btn) {
+        messageInput.value = btn.textContent.slice(2).trim();
+        sendMessage();
+    }
+
+    function clearChat() {
+        const msgs = chatContainer.querySelectorAll('.message, .typing');
+        msgs.forEach(m => m.remove());
+        if (!welcome) {
+            const w = document.createElement('div');
+            w.className = 'welcome';
+            w.id = 'welcome';
+            chatContainer.appendChild(w);
+        }
+        chatContainer.innerHTML = `
+            <div class="welcome" id="welcome">
+                <div class="welcome-icon">🔥</div>
+                <h2>Olov AI ga xush kelibsiz!</h2>
+                <p>Men har qanday savolga javob bera olaman. O'zbek, Rus yoki Ingliz tilida gaplashing!</p>
+                <div class="suggestions">
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)">🐍 Python o'rgatib ber</button>
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)">✍️ Ijodiy hikoya yoz</button>
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)">🔢 Matematik masala yech</button>
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)">🌍 Inglizchaga tarjima qil</button>
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)">💡 5 ta qiziqarli fakt ayt</button>
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)">📧 Rasmiy xat yoz</button>
+                </div>
+            </div>`;
+    }
+
+    function addMessage(text, isUser) {
+        // Welcomeni yashirish
+        const w = document.getElementById('welcome');
+        if (w) w.remove();
+
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${isUser ? 'user' : ''}`;
+
+        const formatted = isUser ? text : formatText(text);
+        msgDiv.innerHTML = `
+            <div class="avatar ${isUser ? 'user' : 'bot'}">${isUser ? '👤' : '🔥'}</div>
+            <div class="bubble ${isUser ? 'user' : 'bot'}">${formatted}</div>
+        `;
+
+        chatContainer.appendChild(msgDiv);
+        scrollToBottom();
+    }
+
+    function formatText(text) {
+        // Markdown-style formatting
+        return text
+            .replace(/```(\w+)?\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+            .replace(/`([^`]+)`/g, '<code>$1</code>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.+?)\*/g, '<em>$1</em>')
+            .replace(/\n/g, '<br>');
+    }
+
+    function showTyping() {
+        const div = document.createElement('div');
+        div.className = 'typing';
+        div.id = 'typingIndicator';
+        div.innerHTML = `
+            <div class="avatar bot">🔥</div>
+            <div class="typing-bubble">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        `;
+        chatContainer.appendChild(div);
+        scrollToBottom();
+    }
+
+    function hideTyping() {
+        const t = document.getElementById('typingIndicator');
+        if (t) t.remove();
+    }
+
+    function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const text = messageInput.value.trim();
+        if (!text || isTyping) return;
+
+        isTyping = true;
+        sendBtn.disabled = true;
+        messageInput.value = '';
+        messageInput.style.height = 'auto';
+
+        addMessage(text, true);
+        showTyping();
+
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text, session_id: sessionId })
+            });
+
+            const data = await res.json();
+            hideTyping();
+            addMessage(data.response, false);
+        } catch (err) {
+            hideTyping();
+            addMessage('❌ Xato yuz berdi. Internet aloqangizni tekshiring.', false);
+        }
+
+        isTyping = false;
+        sendBtn.disabled = false;
+        messageInput.focus();
+    }
+</script>
+
+</body>
+</html>
